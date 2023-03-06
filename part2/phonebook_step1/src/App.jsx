@@ -11,8 +11,8 @@ function App() {
 	const [newName, setNewName] = useState('')
 	const [newNumber, setNewNumber] = useState('')
 	const [filterValue, setFilterValue] = useState('')
-	const [errorMessage, setErrorMessage] = useState(null)
-	const [successMessage, setSuccessMessage] = useState(null)
+	const [notificationType, setNotificationType] = useState(null)
+	const [notificationMessage, setNotificationMessage] = useState(null)
 
 	const getPersons = () => {
 		personServices
@@ -37,6 +37,23 @@ function App() {
 	const filteredPersons = persons.filter((person) => 
 		person.name.toLowerCase().startsWith(filterValue.toLowerCase())
 	)
+
+	const showSuccessNotification = (message) => {
+		setNotificationType('success')
+		setNotificationMessage(message)
+		setTimeout(() => {
+			setNotificationMessage(null)
+			setNotificationType(null)
+		}, 5000)
+	}
+	const showErrorNotification = (message) => {
+		setNotificationType('error')
+		setNotificationMessage(message)
+		setTimeout(() => {
+			setNotificationMessage(null)
+			setNotificationType(null)
+		}, 5000)
+	}
 
 	const deletePerson = (id) => {
 		const person = persons.find(person => person.id === id)
@@ -64,12 +81,12 @@ function App() {
 						setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
 						setNewName('')
 						setNewNumber('')
-						setErrorMessage(`Updated number for ${returnedPerson.name}`)
-						setTimeout(() => {
-							setErrorMessage(null)
-						}, 5000)
+						showSuccessNotification(`Updated number for ${returnedPerson.name}`)
 					})
-			}
+				.catch(error => {
+					showErrorNotification(`Information of ${changedPerson.name} has already been removed from server`)
+					setPersons(persons.filter(person => person.id !== changedPerson.id))
+				})}
 		} else {
 			const newPersonObject = {
 				name: newName,
@@ -82,17 +99,14 @@ function App() {
 					setPersons(persons.concat(returnedPerson))
 					setNewName('')
 					setNewNumber('')
-					setErrorMessage(`Added ${returnedPerson.name}`)
-					setTimeout(() => {
-						setErrorMessage(null)
-					}, 5000)
+					showSuccessNotification(`Added ${returnedPerson.name}`)
 			})
 		}
 	}
 
 	return (
 		<div className="container">
-			<Notification message={errorMessage} />
+			<Notification message={notificationMessage} type={notificationType} />
 			<h2> Phonebook </h2>
 			<Filter value={filterValue} handleFilterValueChange={handleFilterValueChange}/>
 			<h2> Add new</h2>
