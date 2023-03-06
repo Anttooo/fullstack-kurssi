@@ -12,6 +12,10 @@ function App() {
 		country.name.common.toLowerCase().startsWith(search.toLowerCase())
 	)
 
+	const selectCountry = (name) => {
+		setSearch(name)
+	}
+
 	const getCountries = () => {
 		axios
 			.get("https://restcountries.com/v3.1/all")
@@ -24,8 +28,8 @@ function App() {
 
 	return (
     	<div>
-			Find countries <input onChange={handleSearchChange}/>
-			<Countries countries={filteredCountries}/>
+			Find countries <input value={search} onChange={handleSearchChange}/>
+			<Countries countries={filteredCountries} handleClick={selectCountry}/>
     	</div>
 	)
 }
