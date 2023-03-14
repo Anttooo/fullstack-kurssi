@@ -1,0 +1,28 @@
+DELETE http://localhost:3001/api/persons/1
+
+###
+GET http://localhost:3001/api/persons
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+	"name": "tester",
+	"number": "123"
+}
+
+### 
+DELETE https://restless-paper-7807.fly.dev/api/persons/1
+
+###
+GET https://restless-paper-7807.fly.dev/api/persons
+
+###
+POST https://restless-paper-7807.fly.dev/api/persons
+Content-Type: application/json
+
+{
+	"name": "tester",
+	"number": "123"
+}
