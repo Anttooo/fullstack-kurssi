@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1678897543949" clover="3.2.0">
-  <project timestamp="1678897543949" name="All files">
-    <metrics statements="62" coveredstatements="61" conditionals="12" coveredconditionals="11" methods="13" coveredmethods="12" elements="87" coveredelements="84" complexity="0" loc="62" ncloc="62" packages="5" files="6" classes="6"/>
+<coverage generated="1678902382379" clover="3.2.0">
+  <project timestamp="1678902382379" name="All files">
+    <metrics statements="63" coveredstatements="62" conditionals="12" coveredconditionals="11" methods="13" coveredmethods="12" elements="88" coveredelements="85" complexity="0" loc="63" ncloc="63" packages="5" files="6" classes="6"/>
     <package name="blog_list">
       <metrics statements="16" coveredstatements="15" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
       <file name="app.js" path="/Users/onnianttoora/full_stack_open/part4/blog_list/app.js">
@@ -34,19 +34,20 @@
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
         <line num="16" count="1" type="stmt"/>
       </file>
     </package>
     <package name="blog_list.models">
-      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="blog.js" path="/Users/onnianttoora/full_stack_open/part4/blog_list/models/blog.js">
-        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
       </file>
     </package>
     <package name="blog_list.tests">
@@ -54,7 +55,7 @@
       <file name="test_helper.js" path="/Users/onnianttoora/full_stack_open/part4/blog_list/tests/test_helper.js">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
       </file>
     </package>
     <package name="blog_list.utils">
