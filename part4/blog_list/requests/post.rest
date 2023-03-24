@@ -2,8 +2,20 @@ POST http://localhost:3001/api/blogs
 Content-Type: Application/Json
 
 {
-  "title": "test",
+  "title": "another fancy article",
   "author": "onni",
-  "url": "www.facebook.com",
-  "likes": 5
+  "url": "www.myblog.com",
+  "likes": 25,
+  "user": "641dc11cc4bc6995a15ef4f3"
+}
+
+###
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "onni23",
+  "username": "onni431",
+  "password": "salasana"
 }

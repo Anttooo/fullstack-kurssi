@@ -1,9 +1,13 @@
-const mongoose = require('mongoose')
-const Blog = require('../models/blog')
 const supertest = require('supertest')
+const mongoose = require('mongoose')
 const helper = require('./test_helper')
 const app = require('../app')
+const { initial } = require('lodash')
 const api = supertest(app)
+const bcrypt = require('bcrypt')
+
+const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -94,6 +98,161 @@ describe('API', () => {
       .post('/api/blogs')
       .send(blogWithoutTitle)
       .expect(400)
+  })
+})
+
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+      helper.initialBlogs.length - 1
+    )
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+})
+
+describe ('modifying a blog', () => {
+  test('the number of likes can be increased', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToModify = blogsAtStart[0]
+    const likesAtStart = blogToModify.likes
+
+    const blogWithIncreasedLikes = {
+      ...blogToModify,
+      likes: blogToModify.likes + 1
+    }
+
+    await api
+      .put(`/api/blogs/${blogToModify.id}`)
+      .send(blogWithIncreasedLikes)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const likesAtEnd = blogsAtEnd[0].likes
+    
+    expect(likesAtEnd).toBe(likesAtStart + 1)
+  })
+
+  test('the number of likes can be decreased', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToModify = blogsAtStart[0]
+    const likesAtStart = blogToModify.likes
+
+    const blogWithDecreasedLikes = {
+      ...blogToModify,
+      likes: blogToModify.likes - 1
+    }
+
+    await api
+      .put(`/api/blogs/${blogToModify.id}`)
+      .send(blogWithDecreasedLikes)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const likesAtEnd = blogsAtEnd[0].likes
+    
+    expect(likesAtEnd).toBe(likesAtStart - 1)
+  })
+})
+
+describe('User-handling', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('salasana', 10)
+    const user = new User({username: 'root', passwordHash})
+
+    await user.save()
+  })
+
+  test('creation succeeds with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'onni',
+      name: 'Onni Anttoora',
+      password: 'salasana'
+    }
+    
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+    
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('correct error code returned for duplicate username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Onni Anttoora',
+      password: 'salasana'
+    }
+    
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(usersAtStart)
+  })
+
+  test('Too short username results correct error code', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'On',
+      name: 'Onni Anttoora',
+      password: 'salasana'
+    }
+    
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(usersAtStart)
+  })
+
+  test('Too short password results correct error code', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'Onni',
+      name: 'Onni Anttoora',
+      password: 'ro'
+    }
+    
+    await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+    
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(usersAtStart)
   })
 })
 
