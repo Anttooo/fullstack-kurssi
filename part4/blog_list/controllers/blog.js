@@ -12,14 +12,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  
-	const decodedToken = jwt.verify(request.token, process.env.SECRET)
-	if (!decodedToken.id) {
-		response.status(401).json({
-			error: 'token invalid'
-		})
-	}
-  const user = await User.findById(decodedToken.id)
+  const user = await User.findById(request.user.id)
   
   const blog = new Blog({
     "title": body.title,
@@ -42,18 +35,20 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  console.log('in router, id to delete: ', request.params.id)
-  const blogToDelete = await Blog.findByIdAndRemove(request.params.id)
-  if (blogToDelete) {
+  const user = request.user
+  const blogToDelete = await Blog.findById(request.params.id)
+	const correctUser = (blogToDelete.user.toString() === user.id.toString())
+  if (blogToDelete && correctUser) {
     response.status(204).end()
   } else {
-    response.status(404).end()
+    response.status(401).json({
+			error: 'No rights to delete this post with this user id'
+		})
   }
 })
 
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
-  console.log('from router | request body: ', request.body)
 
   const blog = {
     title: body.title,
@@ -61,8 +56,6 @@ blogsRouter.put('/:id', async (request, response) => {
     url: body.url,
     likes: body.likes
   }
-
-  console.log('from router | request.body.likes: ', body.likes)
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
   response

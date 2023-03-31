@@ -5,9 +5,31 @@ const app = require('../app')
 const { initial } = require('lodash')
 const api = supertest(app)
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const Blog = require('../models/blog')
 const User = require('../models/user')
+
+const getToken = async (id) => {
+	const userForToken = {
+		username: 'blogger',
+		id: id,
+	}
+	const token = jwt.sign(userForToken, process.env.SECRET)
+	return token
+}
+
+let token
+
+beforeAll(async () => {
+	const passwordHash = await bcrypt.hash('salasana', 10)
+	const user = new User({username: 'blogger', passwordHash})
+
+	await user.save()
+	const blogger = await User.findOne({username: 'blogger'})
+	console.log(blogger.id)
+	token = await getToken(blogger.id)
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -39,8 +61,11 @@ describe('API', () => {
       likes: 2,
     }
 
+		console.log(`bearer ${token}`)
+
     await api
       .post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -68,6 +93,7 @@ describe('API', () => {
 
     await api
       .post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -84,6 +110,7 @@ describe('API', () => {
 
     await api
       .post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
       .send(blogWithoutUrl)
       .expect(400)
   })
@@ -96,6 +123,7 @@ describe('API', () => {
 
     await api
       .post('/api/blogs')
+			.set('Authorization', `bearer ${token}`)
       .send(blogWithoutTitle)
       .expect(400)
   })
@@ -108,6 +136,7 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+			.set('Authorization', `bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
