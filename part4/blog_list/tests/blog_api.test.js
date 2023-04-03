@@ -22,11 +22,12 @@ const getToken = async (id) => {
 let token
 
 beforeAll(async () => {
+	await User.deleteMany({})
 	const passwordHash = await bcrypt.hash('salasana', 10)
-	const user = new User({username: 'blogger', passwordHash})
+	const user = new User({username: 'testUser', passwordHash})
 
 	await user.save()
-	const blogger = await User.findOne({username: 'blogger'})
+	const blogger = await User.findOne({username: 'testUser'})
 	console.log(blogger.id)
 	token = await getToken(blogger.id)
 })
@@ -60,8 +61,6 @@ describe('API', () => {
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/test-post.html",
       likes: 2,
     }
-
-		console.log(`bearer ${token}`)
 
     await api
       .post('/api/blogs')
@@ -131,8 +130,30 @@ describe('API', () => {
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+		const newBlog = {
+			title: "test post",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/test-post.html",
+      likes: 2,
+    }
+		
+    await api
+		.post('/api/blogs')
+		.set('Authorization', `bearer ${token}`)
+		.send(newBlog)
+		.expect(201)
+		.expect('Content-Type', /application\/json/)
+		
+		// here it should specify that it's deleting a blog by blogger
+		const blogsAtStart = await helper.blogsInDb()
+		console.log('nr of blogs at start: ', blogsAtStart.length)
+    const blogToDelete = blogsAtStart.find(blog => blog.title === "test post")
+		console.log('id: ', blogToDelete.id)
+		console.log('blogs at start: ', blogsAtStart)
+
+		const ids = blogsAtStart.map(r => r.id)
+
+		console.log('all ids: ', ids)
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
@@ -140,9 +161,10 @@ describe('deletion of a blog', () => {
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
+		console.log('blogs at end: ', blogsAtEnd)
 
     expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
+      blogsAtStart.length - 1
     )
 
     const titles = blogsAtEnd.map(r => r.title)
