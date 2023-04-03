@@ -28,7 +28,6 @@ beforeAll(async () => {
 
 	await user.save()
 	const blogger = await User.findOne({username: 'testUser'})
-	console.log(blogger.id)
 	token = await getToken(blogger.id)
 })
 
@@ -146,14 +145,7 @@ describe('deletion of a blog', () => {
 		
 		// here it should specify that it's deleting a blog by blogger
 		const blogsAtStart = await helper.blogsInDb()
-		console.log('nr of blogs at start: ', blogsAtStart.length)
     const blogToDelete = blogsAtStart.find(blog => blog.title === "test post")
-		console.log('id: ', blogToDelete.id)
-		console.log('blogs at start: ', blogsAtStart)
-
-		const ids = blogsAtStart.map(r => r.id)
-
-		console.log('all ids: ', ids)
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
@@ -161,7 +153,6 @@ describe('deletion of a blog', () => {
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-		console.log('blogs at end: ', blogsAtEnd)
 
     expect(blogsAtEnd).toHaveLength(
       blogsAtStart.length - 1
