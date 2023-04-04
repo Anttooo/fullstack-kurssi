@@ -34,14 +34,10 @@ POST http://localhost:3003/api/login
 Content-Type: application/json
 
 {
-	"username": "testi",
-	"password": "salasana"
+	"username": "root",
+	"password": "root"
 }
 
 ### 
 GET http://localhost:3003/api/blogs
-Content-Type: application/json
-
-{
-	"userId": "641dc11cc4bc6995a15ef4f3"
-}
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY0MmE4OTdiNDkwOTY2M2Y1ZjUwZjBlNCIsImlhdCI6MTY4MDUxNzk3NH0.7SujpkDZ5R_Hgm8A2a0R_bo8aFCx9fcqp4np-JHTuzs
