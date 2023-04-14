@@ -9,8 +9,8 @@ import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState([])
-  const [password, setPassword] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
@@ -37,7 +37,7 @@ const App = () => {
 
   // component for listing the blogs
   const blogList = () => (
-    <div>
+    <div className='blogList'>
       <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
@@ -107,11 +107,11 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <div>
+    <div className='loginForm'>
       <LoginForm
         handleLogin ={handleLogin}
-        handleUsernameChange={setUsername}
-        handlePasswordChange={setPassword}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
         username={username}
         password={password}
       />

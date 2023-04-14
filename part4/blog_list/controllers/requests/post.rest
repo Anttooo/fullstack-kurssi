@@ -1,0 +1,39 @@
+POST http://localhost:3001/api/blogs
+Content-Type: Application/Json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9ubmk0MzEiLCJpZCI6IjY0MWRjMTFjYzRiYzY5OTVhMTVlZjRmMyIsImlhdCI6MTY4MDI0Mzc3OH0.CpkW8aBr9FJwT1R9C3brGuLaRY-zXZIBziNPeEqukjg
+
+{
+  "title": "blog to be deleted",
+  "author": "onni",
+  "url": "www.deletethis.com",
+  "likes": 25
+}
+
+###
+DELETE http://localhost:3001/api/blogs/642a6a5cde002f377022e1a0
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9ubmk0MzEiLCJpZCI6IjY0MWRjMTFjYzRiYzY5OTVhMTVlZjRmMyIsImlhdCI6MTY4MDI0Mzc3OH0.CpkW8aBr9FJwT1R9C3brGuLaRY-zXZIBziNPeEqukjg
+
+###
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "name": "testi",
+  "username": "testi",
+  "password": "salasana"
+}
+
+### 
+
+GET http://localhost:3001/api/users
+
+### 
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+	"username": "testi",
+	"password": "salasana"
+}
