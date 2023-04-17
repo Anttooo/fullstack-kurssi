@@ -92,7 +92,7 @@ describe('Blog app', function() {
         cy.get('.submitButton').click()
       })
 
-      it.only('Blogs are organised so that one with most likes is first', function() {
+      it('Blogs are organised so that one with most likes is first', function() {
         cy.contains('most likes').contains('view').click()
         cy.contains('most likes')
           .parent()
