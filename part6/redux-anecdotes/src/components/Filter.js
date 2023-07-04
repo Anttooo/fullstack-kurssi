@@ -7,7 +7,7 @@ const Filter = () => {
   const changeFilterValue = (event) => {
     console.log('event triggered with value', event.target.value)
     dispatch(filterValueChange(event.target.value))
-  } 
+} 
 
   return (
     <div className="m-4 font-sans font-bold">

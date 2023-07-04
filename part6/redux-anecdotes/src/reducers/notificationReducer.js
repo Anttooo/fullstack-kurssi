@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { useDispatch } from "react-redux"
 
 var initialState = ""
 
@@ -16,4 +17,15 @@ const notificationSlice = createSlice({
 })
 
 export const { showNotification, removeNotification } = notificationSlice.actions
+
+export const setNotification = (content, delay) => {
+	return dispatch => {
+		dispatch(showNotification(`You voted for: "${content}"`))
+		setTimeout(function() {
+			dispatch(removeNotification())
+		}, delay * 1000)
+
+	}
+}
+
 export default notificationSlice.reducer
